@@ -14,6 +14,8 @@ public class MineSweeper {
     int givenCol;          // User input column
     boolean gameOver = false;    // Flag to indicate whether the game is over
 
+    int openedCellsCount = 0;
+
     MineSweeper(int row, int col) {
         this.row = row;
         this.col = col;
@@ -21,7 +23,7 @@ public class MineSweeper {
         this.size = row * col;
         this.matrix = new String[row][col];
     }
-    
+
     // Method to randomly place mines
     public void placeMines() {
         int randomRow, randomCol, count = 0;
@@ -43,9 +45,10 @@ public class MineSweeper {
             mineList[count] = randomRow + "," + randomCol;
             count++;
         }
-        System.out.println(Arrays.toString(mineList));
+        System.out.println(Arrays.toString(mineList) + " MAYINLAR BU BÖLGELERDE");
     }
-                // Method to draw the user's board
+
+    // Method to draw the user's board
     public void draw() {
         if (checkCoordInMineList(givenCoord)) {
             System.out.println("GAME OVER !");
@@ -95,12 +98,33 @@ public class MineSweeper {
         }
         return Objects.toString(count);
     }
-        // Method to start the game
+
+    public void incrementOpenedCellsCount() {
+        openedCellsCount++;
+    }
+
+    // Checking if the game is won or not
+    public boolean checkGameWon() {
+        //If all the cells are opened and the game is not over, the game is won.
+        return openedCellsCount == (row * col - mineList.length) && !gameOver;
+    }
+
+    // Method to start the game
     public void run(int coordX, int coordY) {
         givenCoord = coordX + "," + coordY;
         givenRow = coordX;
         givenCol = coordY;
-        draw();
+
+        incrementOpenedCellsCount();   // The counter is incremented when the cell is opened
+
+        // Check if the game is won
+        if (checkGameWon()) {
+            System.out.println("TEBRİKLER! OYUNU KAZANDINIZ!");
+            gameOver = true;
+        } else {
+            // If the game is not won, the game continues
+            draw();
+        }
     }
 }
 
